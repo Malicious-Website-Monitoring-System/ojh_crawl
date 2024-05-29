@@ -26,10 +26,7 @@ def Extract_with_selenium(self,response):
         # 각 태그의 content 속성 값 가져오기
         contents = [tag.get_attribute("content") for tag in all_tags]
         contents_words=[]
-        for content in contents:
-            # 각 content에서 단어 추출하기
-            content_word = re.findall(r'\b\w+\b', content)
-            
+        for content in contents:  
             # 각 content에서 한글만 추출하기 -> 영어까지 하면 'width' / 'index' / 'follow' / 'https', 'funbe384', 'com', 'EC', '9B', 'B9', 'ED', '88', 'B0' 등. 제외해도 될 것 같음
             content_word = re.findall(r'[\uAC00-\uD7A3]+', content)
             contents_words.extend(content_word)
@@ -40,9 +37,9 @@ def Extract_with_selenium(self,response):
         # body 요소 안에 있는 모든 텍스트 가져오기
         body_text = body_element.text
 
-        # 단어만 추출하기
+        # 단어만 추출하기 #토토보증업체1BET1 이런거때문에 숫자도 포함
         body_words = re.findall(r'\b\w+\b', body_text)
-        
+
         # 단어와 contents를 하나의 리스트로 합치기
         combined_list = body_words + contents_words
         
@@ -58,7 +55,7 @@ def Extract_with_selenium(self,response):
 
 #확인용
 #Extract_with_selenium(url)
-a=Extract_with_selenium("https://wfwf328.com")#("https://www.coupang.com")#("https://blacktoon.info")#("https://funbe383.com")#("https://www.naver.com/")
+a=Extract_with_selenium("https://funbe385.com/%EC%9B%B9%ED%88%B0")#("https://wfwf328.com")#("https://funbe383.com")#("https://www.coupang.com")#("https://blacktoon.info")#("https://www.naver.com/")
 print(a)
 
 
