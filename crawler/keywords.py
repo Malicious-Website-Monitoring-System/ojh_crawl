@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
-def Extract_with_selenium(self,response):
+def extract_with_selenium(self,response):
     try:
         url = response.url      
         options = Options()
