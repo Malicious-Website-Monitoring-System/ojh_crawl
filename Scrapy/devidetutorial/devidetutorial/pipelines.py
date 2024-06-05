@@ -17,6 +17,10 @@ from itemadapter import ItemAdapter
 from scrapy.exceptions import NotConfigured
 from .items import GetWordsItem
 
+# OPENAI_API_KEY 설정
+OPENAI_API_KEY = "sk"
+# openai API 키 인증
+openai.api_key = OPENAI_API_KEY
 
 class SQLitePipeline:
 
