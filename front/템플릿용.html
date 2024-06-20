@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Browse Database</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        main {
+            max-width: 900px; 
+            margin: auto;
+            padding: 20px;
+        }
+        table {
+            width: 100%; 
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        th, td {
+            text-align: left;
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin-top: 20px; 
+        }
+        .pagination li {
+            margin: 0 5px;
+        }
+        .pagination a {
+            text-decoration: none;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            color: #007bff;
+            border-radius: 4px;
+        }
+        .pagination a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        .tag {
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .tag.adult {
+            background-color: #b20909; /* 성인 */
+        }
+
+        .tag.gambling {
+            background-color: #ea1acb; /* 불법도박 */
+        }
+
+        .tag.freewebtoon {
+            background-color: #1c3ee9; /* 불법웹툰 */
+        }
+
+        .tag.torrent {
+            background-color: #e2901d; /* 토렌트 */
+        }
+
+        .tag.reported {
+            background-color: #f13030; /* 신고됨 */
+        }
+
+        .tag.not-reported {
+            background-color: #0aa20f; /* 신고안됨 */
+        }
+        form {
+            display: flex;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        form input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        form button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #b52e1c;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #fb8749; 
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h2>Browse Database</h2>
+        <hr>
+        <!-- 검색 폼. 사용자가 원하는 태그를 입력하고 검색 버튼을 눌러 검색 수행 -->
+        <form action="{% url 'browse_database' %}" method="get" name="search_form">  <!-- views.py에 데이터베이스에서 데이터를 가져와 템플릿에 전달하는 뷰 필요. ex) def browse_database에서 데이터베이스에서 데이터 가져오고/태그 필터링_검색기능/페이징 처리-->
+            <input type="text" placeholder="원하는 tag를 입력하세요 : 성인/불법도박/불법웹툰/토렌트" id="search_input" name="search_query"  value="{{ request.GET.search }}">
+            <button type="submit">Search</button>
+        </form>
+
+         <!-- 데이터베이스에서 가져온 데이터를 표시하는 테이블 -->
+        <table>
+            <thead>
+                <tr>
+                    <th>URL</th>
+                    <th>마지막검사시간</th>
+                    <th>유형</th>
+                    <th>신고현황</th>
+                    <th>신고자</th>
+                    <th>비고</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %} <!--records 변수에 포함된 각 항목을 반복. 뷰에서 전달된 데이터-->
+                <tr>
+                    <td><a href="{{ record.host }}">{{ record.host }}</a></td> <!--url 속성 값을 출력-->
+                    <td>{{ record.last_check_time }}</td> <!-- 마지막 검사일 속성 값을 출력-->
+                    <td><span class="tag {{ record.classification }}">{{ record.classification }}</span></td>  <!-- 유형을 출력-->
+                    <td><span class="tag {{ record.report_status }}">{{ record.report_status }}</span></td>  <!-- 신고 접수 여부 속성 값을 출력. 신고 여부-->
+                    <td>{{ record.reporter }}</td> <!-- 신고자 속성 값 출력-->
+                    <td>{{ record.remarks }}</td> <!-- 비고 -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- 페이지 네비게이션 -->
+        <!-- views.py에서 def browse_database 내에서 페이징 처리
+        paginator = Paginator(records, 20)  # 각 페이지당 20개의 레코드
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number) -->
+
+        <nav>
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <!--이전 페이지가 있는 경우에만 이 링크가 생성-->
+                    <li><a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}">Previous</a></li>
+                {% endif %}
+                
+                <!-- 현재 몇페이진지 알려줌. 1페이지 제외.-->
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">{{ page_obj.number }}</span>
+                </li>
+
+                {% if page_obj.has_next %}
+                <!--다음 페이지가 있는 경우에만 이 링크가 생성-->
+                    <li><a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ search_query }}">Next</a></li>
+                {% endif %}
+
+            </ul>
+        </nav>
+    </main>
+</body>
+</html>
