@@ -83,11 +83,11 @@ form input[type="text"] {
 form button {
     padding: 10px 20px;
     border: none;
-    background-color: #b52e1c;
+    background-color: #0033cc; /* #b52e1c;*/
     color: white;
     border-radius: 4px;
     cursor: pointer;
 }
 form button:hover {
-    background-color: #fb8749; 
+    background-color: #007bff; /*#fb8749; /* 마우스를 올렸을 때의 배경색 */
 }
